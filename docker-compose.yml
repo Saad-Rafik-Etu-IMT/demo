@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # Spring Boot Application (avec H2 embarqué)
+  # ========================================
+  app:
+    build: .
+    container_name: bfb-app
+    ports:
+      - "8080:8080"
+    environment:
+      # H2 en mode PostgreSQL (embarqué)
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/app/data/bfbdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: ""
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_H2_CONSOLE_ENABLED: "true"
+      SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS: "true"
+    volumes:
+      - app_data:/app/data
+    networks:
+      - bfb-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  app_data:
+    driver: local
+
+networks:
+  bfb-network:
+    driver: bridge
