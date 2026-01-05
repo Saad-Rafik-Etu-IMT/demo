@@ -1,0 +1,94 @@
+package com.bfb.business.client.service;
+
+ 
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bfb.business.client.exception.ClientNotFoundException;
+import com.bfb.business.client.exception.DuplicateClientException;
+import com.bfb.business.client.exception.DuplicateLicenseException;
+import com.bfb.business.client.model.Client;
+
+    
+@Service
+@Transactional
+public class ClientService {
+
+    private final ClientRepository clientRepository;
+
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+    public Client create(String firstName, String lastName, String address, String licenseNumber, LocalDate birthDate) {
+        if (clientRepository.existsByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate)) {
+            throw new DuplicateClientException(
+                String.format("A client with name '%s %s' and birth date '%s' already exists. " +
+                    "Clients must be unique by their full name and birth date.",
+                    firstName, lastName, birthDate)
+            );
+        }
+        
+        if (clientRepository.existsByLicenseNumber(licenseNumber)) {
+            throw new DuplicateLicenseException(
+                String.format("License number '%s' is already registered to another client. " +
+                    "Each license number must be unique", licenseNumber)
+            );
+        }
+        
+        Client client = new Client(null, firstName, lastName, address, licenseNumber, birthDate);
+        return clientRepository.save(client);
+    }
+
+    public Client findById(UUID id) {
+        return clientRepository.findById(id)
+            .orElseThrow(() -> new ClientNotFoundException(
+                String.format("Client %s not found", id)
+            ));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Client> findAll() {
+        return clientRepository.findAll();
+    }
+
+    public org.springframework.data.domain.Page<Client> findAll(org.springframework.data.domain.Pageable pageable) {
+        return clientRepository.findAll(pageable);
+    }
+
+    public boolean exists(UUID id) {
+        return clientRepository.findById(id).isPresent();
+    }
+
+    public Client update(UUID id, String firstName, String lastName, String address, String licenseNumber, LocalDate birthDate) {
+        Client client = findById(id);
+        
+        if (clientRepository.existsByLicenseNumberAndIdNot(licenseNumber, id)) {
+            throw new DuplicateLicenseException(
+                String.format("License number '%s' is already registered to another client. " +
+                    "Each license number must be unique.", licenseNumber)
+            );
+        }
+        
+        client.setFirstName(firstName);
+        client.setLastName(lastName);
+        client.setAddress(address);
+        client.setLicenseNumber(licenseNumber);
+        client.setBirthDate(birthDate);
+        return clientRepository.save(client);
+    }
+
+    public void delete(UUID id) {
+        if (!clientRepository.existsById(id)) {
+            throw new ClientNotFoundException(
+                String.format("Client %s not found", id)
+            );
+        }
+        clientRepository.deleteById(id);
+    }
+}
