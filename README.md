@@ -26,7 +26,7 @@ Pour activer la V2, **décommenter** les endpoints dans :
 - `VehicleController.java`
 - `ContractController.java`
 
-📄 **Voir [README-CICD.md](./README-CICD.md) pour le guide complet du projet CI/CD**
+📄 **Voir le [README de cicd-platform](../cicd-platform/README.md) pour le guide complet du projet CI/CD**
 
 ---
 
