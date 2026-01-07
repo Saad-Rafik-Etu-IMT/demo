@@ -81,11 +81,10 @@ public class VehicleController extends BaseRestController<Vehicle, VehicleDto> {
         return ok(vehicleMapper.toDto(vehicle));
     }
 
-    // V1: DELETE endpoint disabled for rollback demonstration
-    // @DeleteMapping("/{id}")
-    // @Operation(summary = "Delete a vehicle")
-    // public ResponseEntity<Void> delete(@PathVariable UUID id) {
-    //     vehicleService.delete(id);
-    //     return noContent();
-    // }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a vehicle")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        vehicleService.delete(id);
+        return noContent();
+    }
 }

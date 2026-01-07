@@ -93,11 +93,10 @@ public class ClientController extends BaseRestController<Client, ClientDto> {
         return ok(clientMapper.toDto(client));
     }
 
-    // V1: DELETE endpoint disabled for rollback demonstration
-    // @DeleteMapping("/{id}")
-    // @Operation(summary = "Delete a client")
-    // public ResponseEntity<Void> delete(@PathVariable UUID id) {
-    //     clientService.delete(id);
-    //     return noContent();
-    // }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a client")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        clientService.delete(id);
+        return noContent();
+    }
 }

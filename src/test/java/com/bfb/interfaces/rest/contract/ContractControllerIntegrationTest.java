@@ -294,32 +294,31 @@ class ContractControllerIntegrationTest {
             .andExpect(jsonPath("$.status").value("COMPLETED"));
     }
 
-    // V1: Test disabled - cancel endpoint not available in V1
-    // @Test
-    // void cancelContract_Success() throws Exception {
-    //     // Given - create a pending contract
-    //     CreateContractRequest request = new CreateContractRequest(
-    //         clientId,
-    //         vehicleId,
-    //         LocalDate.now().plusDays(1),
-    //         LocalDate.now().plusDays(8)
-    //     );
-    //     
-    //     String createResponse = mockMvc.perform(post("/api/v1/contracts")
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(objectMapper.writeValueAsString(request)))
-    //         .andExpect(status().isCreated())
-    //         .andReturn()
-    //         .getResponse()
-    //         .getContentAsString();
-    //     
-    //     String contractId = objectMapper.readTree(createResponse).get("id").asText();
+    @Test
+    void cancelContract_Success() throws Exception {
+        // Given - create a pending contract
+        CreateContractRequest request = new CreateContractRequest(
+            clientId,
+            vehicleId,
+            LocalDate.now().plusDays(1),
+            LocalDate.now().plusDays(8)
+        );
+        
+        String createResponse = mockMvc.perform(post("/api/v1/contracts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        
+        String contractId = objectMapper.readTree(createResponse).get("id").asText();
 
-    //     // When & Then
-    //     mockMvc.perform(patch("/api/v1/contracts/{id}/cancel", contractId))
-    //         .andExpect(status().isOk())
-    //         .andExpect(jsonPath("$.status").value("CANCELLED"));
-    // }
+        // When & Then
+        mockMvc.perform(patch("/api/v1/contracts/{id}/cancel", contractId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("CANCELLED"));
+    }
 
     @Test
     void searchContracts_WithoutFilters_ReturnsAllContracts() throws Exception {
