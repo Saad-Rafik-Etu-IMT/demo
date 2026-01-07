@@ -77,12 +77,12 @@ public class ContractController extends BaseRestController<Contract, ContractDto
         return ok(contractMapper.toDto(contract));
     }
 
-    @PatchMapping("/{id}/cancel")
-    @Operation(summary = "Cancel a contract")
-    public ResponseEntity<ContractDto> cancel(@PathVariable UUID id) {
-        Contract contract = contractService.cancel(id);
-        return ok(contractMapper.toDto(contract));
-    }
+    // @PatchMapping("/{id}/cancel")
+    // @Operation(summary = "Cancel a contract")
+    // public ResponseEntity<ContractDto> cancel(@PathVariable UUID id) {
+    //     Contract contract = contractService.cancel(id);
+    //     return ok(contractMapper.toDto(contract));
+    // }
 
     @PostMapping("/jobs/mark-late")
     @Operation(summary = "Mark late contracts")
