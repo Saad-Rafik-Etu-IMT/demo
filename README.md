@@ -356,3 +356,5 @@ For more details, see `src/main/resources/db/migration/README.md`
 ---
 
 **🎉 Projet généré en approche TDD complète avec 100% de tests passants!**
+/ /   T e s t   p i p e l i n e   f i x  
+ 
