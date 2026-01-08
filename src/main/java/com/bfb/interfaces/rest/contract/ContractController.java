@@ -90,6 +90,4 @@ public class ContractController extends BaseRestController<Contract, ContractDto
         int count = contractService.markLateIfOverdue();
         return ResponseEntity.accepted().body(new MarkLateResponse(count));
     }
-
-    //commentaire ajouter pour tester à s
 }
